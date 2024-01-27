@@ -7,19 +7,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MyToken is ERC721, ERC721Enumerable, Ownable {
     uint256 private _nextTokenId;
-    uint256 maxSupply = 3;
+    uint256 maxSupply = 30;
 
-    constructor()
-        ERC721("MyToken", "MTK")
-        Ownable(msg.sender) 
-    {}
+    constructor() ERC721("MyToken", "MTK") Ownable(msg.sender) {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://yellow-accessible-marten-682.mypinata.cloud/ipfs/QmcTA74HmVZkD9iMo1cP94DJNSqLuZ5P1EMwd4fCHbQNju/";
+        return
+            "https://yellow-accessible-marten-682.mypinata.cloud/ipfs/QmcTA74HmVZkD9iMo1cP94DJNSqLuZ5P1EMwd4fCHbQNju/";
     }
 
     function publicMint() public payable {
-        require(msg.value == 0.1 ether, "Not Enough Funds");
+        require(msg.value == 0.01 ether, "Not Enough Funds");
         require(totalSupply() < maxSupply, "Cannot Mint More");
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
@@ -27,32 +25,29 @@ contract MyToken is ERC721, ERC721Enumerable, Ownable {
 
     // The following functions are overrides required by Solidity.
 
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721, ERC721Enumerable)
-        returns (address)
-    {
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal override(ERC721, ERC721Enumerable) returns (address) {
         return super._update(to, tokenId, auth);
     }
 
-    function _increaseBalance(address account, uint128 value)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
+    function _increaseBalance(
+        address account,
+        uint128 value
+    ) internal override(ERC721, ERC721Enumerable) {
         super._increaseBalance(account, value);
     }
 
-    function withdraw(address to) external onlyOwner{
+    function withdraw(address to) external onlyOwner {
         uint256 balance = address(this).balance;
         payable(to).transfer(balance);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
